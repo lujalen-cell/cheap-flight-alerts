@@ -135,6 +135,21 @@
   );
 }
 
+.chrome-text {
+  background-image: linear-gradient(
+    180deg,
+    #fbf8f1 0%,
+    #e3d6c0 46%,
+    #b6a688 50%,
+    #f8f2e6 56%,
+    #dccfb6 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
 @keyframes rise {
   from {
     opacity: 0;

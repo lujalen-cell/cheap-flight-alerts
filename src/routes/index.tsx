@@ -114,7 +114,7 @@ function Index() {
           <div className="rv flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-gold">
             <span className="size-2 rounded-full bg-brand live" /> LIVE · 即時機票行情
           </div>
-          <h1 className="rv [animation-delay:80ms] font-display leading-[0.92] mt-5 text-[clamp(2.6rem,8vw,6rem)] tracking-tight text-balance chrome [background-clip:text] [-webkit-background-clip:text] text-transparent">
+          <h1 className="rv [animation-delay:80ms] font-display leading-[0.98] mt-5 text-[clamp(2.6rem,8vw,6rem)] tracking-tight text-balance chrome-text">
             便宜機票，自動幫你盯
           </h1>
           <p className="rv [animation-delay:160ms] mt-5 max-w-xl font-body text-cream/70 text-pretty">
