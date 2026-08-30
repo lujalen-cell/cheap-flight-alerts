@@ -238,22 +238,19 @@ function Index() {
                       className="mt-1 w-full font-mono text-sm bg-paper-2 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand/40"
                     />
                   </label>
-                  <label className="block">
-                    <span className="font-mono text-[11px] tracking-wider text-ink/50">Email</span>
-                    <input
-                      type="email"
-                      placeholder="you@mail.tw"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="mt-1 w-full font-mono text-sm bg-paper-2 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand/40 placeholder:text-ink/40"
-                    />
-                  </label>
+                  <div className="block">
+                    <span className="font-mono text-[11px] tracking-wider text-ink/50">通知信箱</span>
+                    <div className="mt-1 font-mono text-sm bg-paper-2 rounded-lg px-3 py-2.5 text-ink/60 truncate">
+                      {user ? user.email : "登入帳號的 Email"}
+                    </div>
+                  </div>
                 </div>
                 <button
                   type="submit"
-                  className="mt-5 w-full bg-brand text-cream font-semibold py-3 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors cursor-pointer"
+                  disabled={saving}
+                  className="mt-5 w-full bg-brand text-cream font-semibold py-3 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors disabled:opacity-50 cursor-pointer"
                 >
-                  監控這條航線
+                  {user ? "監控這條航線" : "登入後開始監控"}
                 </button>
                 <p className="mt-3 text-center font-mono text-[11px] text-ink/40">免費 · 隨時取消 · 到價才通知</p>
               </form>
