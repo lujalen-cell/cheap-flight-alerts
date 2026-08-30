@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,20 +66,35 @@ function ChromeDot({ size = "size-5" }: { size?: string }) {
 }
 
 function Index() {
+  const { user } = useSession();
+  const navigate = useNavigate();
   const [destination, setDestination] = useState("NRT");
   const [targetPrice, setTargetPrice] = useState("5000");
-  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.includes("@")) {
-      toast.error("請輸入有效的 Email 地址");
-      return;
-    }
     const price = parseInt(targetPrice.replace(/,/g, ""), 10);
     if (!price || price <= 0) {
       toast.error("請輸入有效的目標價");
+      return;
+    }
+    if (!user) {
+      toast.info("先登入，才能幫你盯這條航線");
+      navigate({ to: "/auth" });
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.from("flight_alerts").insert({
+      user_id: user.id,
+      destination,
+      target_price: price,
+      notify_email: user.email ?? "",
+    });
+    setSaving(false);
+    if (error) {
+      toast.error("儲存失敗，請再試一次");
       return;
     }
     setSubmitted(true);
@@ -99,12 +116,21 @@ function Index() {
             <a href="#alert" className="hover:text-cream">訂閱</a>
             <a href="#how" className="hover:text-cream">怎麼運作</a>
           </nav>
-          <a
-            href="#alert"
-            className="font-mono text-xs tracking-wider bg-brand text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors"
-          >
-            設定提醒
-          </a>
+          {user ? (
+            <Link
+              to="/alerts"
+              className="font-mono text-xs tracking-wider bg-brand text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors"
+            >
+              我的提醒
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="font-mono text-xs tracking-wider bg-brand text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors"
+            >
+              登入 / 註冊
+            </Link>
+          )}
         </div>
       </header>
 
@@ -163,15 +189,23 @@ function Index() {
                 <p className="mt-2 text-sm text-ink/60">
                   TPE → {destination}，價格低於 NT$
                   {parseInt(targetPrice.replace(/,/g, ""), 10).toLocaleString()} 時，
-                  第一時間寄信到 <span className="font-mono">{email}</span>
+                  第一時間寄信到你的帳號信箱。
                 </p>
-                <button
-                  type="button"
-                  onClick={() => setSubmitted(false)}
-                  className="mt-6 font-mono text-xs tracking-wider text-ink/50 underline underline-offset-4 hover:text-ink"
-                >
-                  再設定一條航線
-                </button>
+                <div className="mt-6 flex items-center justify-center gap-4">
+                  <Link
+                    to="/alerts"
+                    className="font-mono text-xs tracking-wider bg-ink text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-ink-soft transition-colors"
+                  >
+                    管理我的提醒
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setSubmitted(false)}
+                    className="font-mono text-xs tracking-wider text-ink/50 underline underline-offset-4 hover:text-ink cursor-pointer"
+                  >
+                    再設定一條航線
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="rounded-3xl bg-cream ring-1 ring-black/5 p-6">
@@ -204,22 +238,19 @@ function Index() {
                       className="mt-1 w-full font-mono text-sm bg-paper-2 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand/40"
                     />
                   </label>
-                  <label className="block">
-                    <span className="font-mono text-[11px] tracking-wider text-ink/50">Email</span>
-                    <input
-                      type="email"
-                      placeholder="you@mail.tw"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="mt-1 w-full font-mono text-sm bg-paper-2 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand/40 placeholder:text-ink/40"
-                    />
-                  </label>
+                  <div className="block">
+                    <span className="font-mono text-[11px] tracking-wider text-ink/50">通知信箱</span>
+                    <div className="mt-1 font-mono text-sm bg-paper-2 rounded-lg px-3 py-2.5 text-ink/60 truncate">
+                      {user ? user.email : "登入帳號的 Email"}
+                    </div>
+                  </div>
                 </div>
                 <button
                   type="submit"
-                  className="mt-5 w-full bg-brand text-cream font-semibold py-3 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors cursor-pointer"
+                  disabled={saving}
+                  className="mt-5 w-full bg-brand text-cream font-semibold py-3 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors disabled:opacity-50 cursor-pointer"
                 >
-                  監控這條航線
+                  {user ? "監控這條航線" : "登入後開始監控"}
                 </button>
                 <p className="mt-3 text-center font-mono text-[11px] text-ink/40">免費 · 隨時取消 · 到價才通知</p>
               </form>
