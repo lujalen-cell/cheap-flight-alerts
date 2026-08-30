@@ -2,7 +2,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { useDocumentHead } from "@/hooks/use-document-head";
 
 // /auth, /sign-in and /sign-up all render this page; the initial tab just
@@ -37,17 +36,18 @@ export default function AuthPage() {
 
   async function handleGoogle() {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+    // Native Supabase OAuth — the browser is redirected to Google and back to
+    // /alerts on success, so there's nothing to do here on the happy path.
+    // Requires a Google provider configured in the Supabase project (see
+    // Authentication → Providers → Google in the Supabase dashboard).
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/alerts` },
     });
-    if (result.error) {
+    if (error) {
       setBusy(false);
       toast.error("Google 登入失敗，請再試一次");
-      return;
     }
-    if (result.redirected) return; // browser is navigating to Google
-    setBusy(false);
-    navigate("/alerts");
   }
 
   async function handleEmail(e: React.FormEvent) {
