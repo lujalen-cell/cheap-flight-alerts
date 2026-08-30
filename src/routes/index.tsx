@@ -116,12 +116,21 @@ function Index() {
             <a href="#alert" className="hover:text-cream">訂閱</a>
             <a href="#how" className="hover:text-cream">怎麼運作</a>
           </nav>
-          <a
-            href="#alert"
-            className="font-mono text-xs tracking-wider bg-brand text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors"
-          >
-            設定提醒
-          </a>
+          {user ? (
+            <Link
+              to="/alerts"
+              className="font-mono text-xs tracking-wider bg-brand text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors"
+            >
+              我的提醒
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="font-mono text-xs tracking-wider bg-brand text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors"
+            >
+              登入 / 註冊
+            </Link>
+          )}
         </div>
       </header>
 
@@ -180,15 +189,23 @@ function Index() {
                 <p className="mt-2 text-sm text-ink/60">
                   TPE → {destination}，價格低於 NT$
                   {parseInt(targetPrice.replace(/,/g, ""), 10).toLocaleString()} 時，
-                  第一時間寄信到 <span className="font-mono">{email}</span>
+                  第一時間寄信到你的帳號信箱。
                 </p>
-                <button
-                  type="button"
-                  onClick={() => setSubmitted(false)}
-                  className="mt-6 font-mono text-xs tracking-wider text-ink/50 underline underline-offset-4 hover:text-ink"
-                >
-                  再設定一條航線
-                </button>
+                <div className="mt-6 flex items-center justify-center gap-4">
+                  <Link
+                    to="/alerts"
+                    className="font-mono text-xs tracking-wider bg-ink text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-ink-soft transition-colors"
+                  >
+                    管理我的提醒
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setSubmitted(false)}
+                    className="font-mono text-xs tracking-wider text-ink/50 underline underline-offset-4 hover:text-ink cursor-pointer"
+                  >
+                    再設定一條航線
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="rounded-3xl bg-cream ring-1 ring-black/5 p-6">
