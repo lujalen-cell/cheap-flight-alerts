@@ -1,30 +1,9 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/use-session";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "DEALFLIGHT 盯盤航空 — 便宜機票，自動幫你盯" },
-      {
-        name: "description",
-        content:
-          "設定出發地、目的地與目標價，DEALFLIGHT 全天候掃描廉航票價，價格一跌破立刻 email 通知你。免費、隨時取消。",
-      },
-      { property: "og:title", content: "DEALFLIGHT 盯盤航空 — 便宜機票，自動幫你盯" },
-      {
-        property: "og:description",
-        content:
-          "設定出發地、目的地與目標價，價格一跌破立刻 email 通知你。免費、隨時取消。",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: Index,
-});
+import { useDocumentHead } from "@/hooks/use-document-head";
 
 const TICKER_DEALS = [
   { route: "TPE → NRT", price: "NT$5,200", was: "NT$8,900" },
@@ -47,25 +26,100 @@ const DESTINATIONS = [
 ];
 
 const DEALS = [
-  { tag: "限時", tagStyle: "brand" as const, date: "3/18 出發", route: ["TPE", "NRT"], meta: "東京 · 單程 · 經濟艙", price: "NT$5,200", was: "NT$8,900", off: "-42%" },
-  { tag: "降價 45%", tagStyle: "gold" as const, date: "3/22 出發", route: ["TPE", "BKK"], meta: "曼谷 · 單程 · 經濟艙", price: "NT$4,100", was: "NT$7,200", off: "-43%" },
-  { tag: "限時", tagStyle: "brand" as const, date: "3/25 出發", route: ["TPE", "ICN"], meta: "首爾 · 單程 · 經濟艙", price: "NT$4,800", was: "NT$9,100", off: "-47%" },
-  { tag: "降價 30%", tagStyle: "gold" as const, date: "3/28 出發", route: ["TPE", "HND"], meta: "東京 · 單程 · 經濟艙", price: "NT$5,600", was: "NT$9,800", off: "-43%" },
-  { tag: "限時", tagStyle: "brand" as const, date: "4/02 出發", route: ["TPE", "CGK"], meta: "雅加達 · 單程 · 經濟艙", price: "NT$6,300", was: "NT$11,000", off: "-43%" },
-  { tag: "降價 38%", tagStyle: "gold" as const, date: "4/05 出發", route: ["TPE", "SIN"], meta: "新加坡 · 單程 · 經濟艙", price: "NT$4,500", was: "NT$7,800", off: "-42%" },
+  {
+    tag: "限時",
+    tagStyle: "brand" as const,
+    date: "3/18 出發",
+    route: ["TPE", "NRT"],
+    meta: "東京 · 單程 · 經濟艙",
+    price: "NT$5,200",
+    was: "NT$8,900",
+    off: "-42%",
+  },
+  {
+    tag: "降價 45%",
+    tagStyle: "gold" as const,
+    date: "3/22 出發",
+    route: ["TPE", "BKK"],
+    meta: "曼谷 · 單程 · 經濟艙",
+    price: "NT$4,100",
+    was: "NT$7,200",
+    off: "-43%",
+  },
+  {
+    tag: "限時",
+    tagStyle: "brand" as const,
+    date: "3/25 出發",
+    route: ["TPE", "ICN"],
+    meta: "首爾 · 單程 · 經濟艙",
+    price: "NT$4,800",
+    was: "NT$9,100",
+    off: "-47%",
+  },
+  {
+    tag: "降價 30%",
+    tagStyle: "gold" as const,
+    date: "3/28 出發",
+    route: ["TPE", "HND"],
+    meta: "東京 · 單程 · 經濟艙",
+    price: "NT$5,600",
+    was: "NT$9,800",
+    off: "-43%",
+  },
+  {
+    tag: "限時",
+    tagStyle: "brand" as const,
+    date: "4/02 出發",
+    route: ["TPE", "CGK"],
+    meta: "雅加達 · 單程 · 經濟艙",
+    price: "NT$6,300",
+    was: "NT$11,000",
+    off: "-43%",
+  },
+  {
+    tag: "降價 38%",
+    tagStyle: "gold" as const,
+    date: "4/05 出發",
+    route: ["TPE", "SIN"],
+    meta: "新加坡 · 單程 · 經濟艙",
+    price: "NT$4,500",
+    was: "NT$7,800",
+    off: "-42%",
+  },
 ];
 
 const STEPS = [
-  { num: "01", title: "設定目標價", desc: "選航線、定你能接受的低價，留下 email 就好。", accent: "border-brand" },
-  { num: "02", title: "我們幫你盯盤", desc: "系統每 30 秒掃描各家票價，比價、追蹤、記下每一跳。", accent: "border-gold" },
-  { num: "03", title: "到價立刻通知", desc: "一低於目標，手機先響。快一步，就是便宜一截。", accent: "border-brand-2" },
+  {
+    num: "01",
+    title: "設定目標價",
+    desc: "選航線、定你能接受的低價，留下 email 就好。",
+    accent: "border-brand",
+  },
+  {
+    num: "02",
+    title: "我們幫你盯盤",
+    desc: "系統每 30 秒掃描各家票價，比價、追蹤、記下每一跳。",
+    accent: "border-gold",
+  },
+  {
+    num: "03",
+    title: "到價立刻通知",
+    desc: "一低於目標，手機先響。快一步，就是便宜一截。",
+    accent: "border-brand-2",
+  },
 ];
 
 function ChromeDot({ size = "size-5" }: { size?: string }) {
   return <span className={`inline-block ${size} rounded-full chrome ring-1 ring-black/20`} />;
 }
 
-function Index() {
+export default function Index() {
+  useDocumentHead({
+    title: "DEALFLIGHT 盯盤航空 — 便宜機票，自動幫你盯",
+    description:
+      "設定出發地、目的地與目標價，DEALFLIGHT 全天候掃描廉航票價，價格一跌破立刻 email 通知你。免費、隨時取消。",
+  });
+
   const { user } = useSession();
   const navigate = useNavigate();
   const [destination, setDestination] = useState("NRT");
@@ -82,7 +136,7 @@ function Index() {
     }
     if (!user) {
       toast.info("先登入，才能幫你盯這條航線");
-      navigate({ to: "/auth" });
+      navigate("/auth");
       return;
     }
     setSaving(true);
@@ -112,9 +166,15 @@ function Index() {
             <span className="font-mono text-[10px] tracking-[0.2em] text-cream/50">TPE.行情</span>
           </a>
           <nav className="hidden sm:flex items-center gap-7 font-mono text-xs tracking-wider text-cream/70">
-            <a href="#deals" className="hover:text-cream">行情</a>
-            <a href="#alert" className="hover:text-cream">訂閱</a>
-            <a href="#how" className="hover:text-cream">怎麼運作</a>
+            <a href="#deals" className="hover:text-cream">
+              行情
+            </a>
+            <a href="#alert" className="hover:text-cream">
+              訂閱
+            </a>
+            <a href="#how" className="hover:text-cream">
+              怎麼運作
+            </a>
           </nav>
           {user ? (
             <Link
@@ -174,7 +234,9 @@ function Index() {
           <div className="rv grid lg:grid-cols-[1fr_1.15fr] gap-10 items-center">
             <div>
               <div className="font-mono text-xs tracking-[0.25em] text-brand">(a) 設定目標價</div>
-              <h2 className="font-display text-4xl mt-3 leading-tight text-balance">價格一跳水，手機先響。</h2>
+              <h2 className="font-display text-4xl mt-3 leading-tight text-balance">
+                價格一跳水，手機先響。
+              </h2>
               <p className="mt-4 text-ink/60 max-w-md text-pretty">
                 填好出發、目的地跟你能接受的目標價。低於它，我們立刻推通知給你。免搶票、免熬夜刷價。
               </p>
@@ -208,11 +270,16 @@ function Index() {
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="rounded-3xl bg-cream ring-1 ring-black/5 p-6">
+              <form
+                onSubmit={handleSubmit}
+                className="rounded-3xl bg-cream ring-1 ring-black/5 p-6"
+              >
                 <div className="grid grid-cols-2 gap-4">
                   <label className="block">
                     <span className="font-mono text-[11px] tracking-wider text-ink/50">出發</span>
-                    <div className="mt-1 font-mono text-sm bg-paper-2 rounded-lg px-3 py-2.5 text-ink/60">台北 TPE</div>
+                    <div className="mt-1 font-mono text-sm bg-paper-2 rounded-lg px-3 py-2.5 text-ink/60">
+                      台北 TPE
+                    </div>
                   </label>
                   <label className="block">
                     <span className="font-mono text-[11px] tracking-wider text-ink/50">目的地</span>
@@ -229,7 +296,9 @@ function Index() {
                     </select>
                   </label>
                   <label className="block">
-                    <span className="font-mono text-[11px] tracking-wider text-ink/50">目標價 (NT$)</span>
+                    <span className="font-mono text-[11px] tracking-wider text-ink/50">
+                      目標價 (NT$)
+                    </span>
                     <input
                       type="text"
                       inputMode="numeric"
@@ -239,7 +308,9 @@ function Index() {
                     />
                   </label>
                   <div className="block">
-                    <span className="font-mono text-[11px] tracking-wider text-ink/50">通知信箱</span>
+                    <span className="font-mono text-[11px] tracking-wider text-ink/50">
+                      通知信箱
+                    </span>
                     <div className="mt-1 font-mono text-sm bg-paper-2 rounded-lg px-3 py-2.5 text-ink/60 truncate">
                       {user ? user.email : "登入帳號的 Email"}
                     </div>
@@ -252,7 +323,9 @@ function Index() {
                 >
                   {user ? "監控這條航線" : "登入後開始監控"}
                 </button>
-                <p className="mt-3 text-center font-mono text-[11px] text-ink/40">免費 · 隨時取消 · 到價才通知</p>
+                <p className="mt-3 text-center font-mono text-[11px] text-ink/40">
+                  免費 · 隨時取消 · 到價才通知
+                </p>
               </form>
             )}
           </div>
@@ -306,7 +379,9 @@ function Index() {
       <section id="how" className="bg-ink text-cream">
         <div className="mx-auto max-w-6xl px-5 py-16">
           <div className="font-mono text-xs tracking-[0.25em] text-gold">(c) 怎麼運作</div>
-          <h2 className="font-display text-4xl mt-2 max-w-2xl text-balance">盯盤三步，到價就出手。</h2>
+          <h2 className="font-display text-4xl mt-2 max-w-2xl text-balance">
+            盯盤三步，到價就出手。
+          </h2>
           <div className="mt-10 grid sm:grid-cols-3 gap-5">
             {STEPS.map((s, i) => (
               <div
@@ -327,7 +402,9 @@ function Index() {
               <ChromeDot size="size-4" />
               <span className="font-display tracking-wide">DEALFLIGHT</span>
             </div>
-            <span className="font-mono text-[11px] text-cream/40">只是通知，不是訂票 · 價格僅供參考 · © 2026</span>
+            <span className="font-mono text-[11px] text-cream/40">
+              只是通知，不是訂票 · 價格僅供參考 · © 2026
+            </span>
           </div>
         </footer>
       </section>

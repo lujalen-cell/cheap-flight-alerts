@@ -1,22 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-
-export const Route = createFileRoute("/_authenticated/alerts")({
-  head: () => ({
-    meta: [
-      { title: "我的提醒 — DEALFLIGHT 盯盤航空" },
-      { name: "description", content: "管理你的機票目標價提醒：新增航線、調整目標價、暫停或刪除監控。" },
-      { property: "og:title", content: "我的提醒 — DEALFLIGHT 盯盤航空" },
-      { property: "og:description", content: "管理你的機票目標價提醒。" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: AlertsPage,
-});
+import { useAuthUser } from "@/components/protected-route";
+import { useDocumentHead } from "@/hooks/use-document-head";
 
 const DESTINATIONS = [
   { code: "NRT", city: "東京（成田）" },
@@ -40,8 +28,13 @@ type Alert = {
   created_at: string;
 };
 
-function AlertsPage() {
-  const { user } = Route.useRouteContext();
+export default function AlertsPage() {
+  useDocumentHead({
+    title: "我的提醒 — DEALFLIGHT 盯盤航空",
+    description: "管理你的機票目標價提醒：新增航線、調整目標價、暫停或刪除監控。",
+  });
+
+  const { user } = useAuthUser();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [destination, setDestination] = useState("NRT");
@@ -114,7 +107,7 @@ function AlertsPage() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate("/auth", { replace: true });
   }
 
   return (
@@ -126,7 +119,9 @@ function AlertsPage() {
             <span className="font-display text-lg tracking-wide">DEALFLIGHT</span>
           </Link>
           <div className="flex items-center gap-4">
-            <span className="hidden sm:block font-mono text-[11px] text-cream/50">{user.email}</span>
+            <span className="hidden sm:block font-mono text-[11px] text-cream/50">
+              {user.email}
+            </span>
             <button
               type="button"
               onClick={handleSignOut}
@@ -171,7 +166,9 @@ function AlertsPage() {
                 </select>
               </label>
               <label className="block col-span-2">
-                <span className="font-mono text-[11px] tracking-wider text-ink/50">目標價 (NT$)</span>
+                <span className="font-mono text-[11px] tracking-wider text-ink/50">
+                  目標價 (NT$)
+                </span>
                 <input
                   type="text"
                   inputMode="numeric"

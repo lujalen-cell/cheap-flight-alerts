@@ -1,29 +1,28 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { useDocumentHead } from "@/hooks/use-document-head";
 
-export const Route = createFileRoute("/auth")({
-  head: () => ({
-    meta: [
-      { title: "登入 / 註冊 — DEALFLIGHT 盯盤航空" },
-      {
-        name: "description",
-        content: "登入 DEALFLIGHT，設定航線目標價，便宜機票一跌破立刻 email 通知你。",
-      },
-      { property: "og:title", content: "登入 / 註冊 — DEALFLIGHT 盯盤航空" },
-      { property: "og:description", content: "登入 DEALFLIGHT，設定航線目標價，到價立刻通知。" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: AuthPage,
-});
+// /auth, /sign-in and /sign-up all render this page; the initial tab just
+// follows the path so a direct link to /sign-up opens on the signup side of
+// the same signin/signup toggle.
+function initialModeFromPath(pathname: string): "signin" | "signup" {
+  return pathname === "/sign-up" ? "signup" : "signin";
+}
 
-function AuthPage() {
+export default function AuthPage() {
+  useDocumentHead({
+    title: "登入 / 註冊 — DEALFLIGHT 盯盤航空",
+    description: "登入 DEALFLIGHT，設定航線目標價，便宜機票一跌破立刻 email 通知你。",
+  });
+
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const location = useLocation();
+  const [mode, setMode] = useState<"signin" | "signup">(() =>
+    initialModeFromPath(location.pathname),
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -32,7 +31,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/alerts", replace: true });
+      if (data.user) navigate("/alerts", { replace: true });
     });
   }, [navigate]);
 
@@ -48,7 +47,7 @@ function AuthPage() {
     }
     if (result.redirected) return; // browser is navigating to Google
     setBusy(false);
-    navigate({ to: "/alerts" });
+    navigate("/alerts");
   }
 
   async function handleEmail(e: React.FormEvent) {
@@ -70,7 +69,7 @@ function AuthPage() {
         return;
       }
       toast.success("登入成功");
-      navigate({ to: "/alerts" });
+      navigate("/alerts");
     } else {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -90,7 +89,7 @@ function AuthPage() {
         return;
       }
       toast.success("註冊成功");
-      navigate({ to: "/alerts" });
+      navigate("/alerts");
     }
   }
 
@@ -111,7 +110,9 @@ function AuthPage() {
 
       <main className="flex-1 grid place-items-center px-5 py-14">
         <div className="w-full max-w-md">
-          <div className="font-mono text-xs tracking-[0.25em] text-gold text-center">MEMBER ACCESS</div>
+          <div className="font-mono text-xs tracking-[0.25em] text-gold text-center">
+            MEMBER ACCESS
+          </div>
           <h1 className="font-display text-4xl text-center mt-3 chrome-text">
             {checkEmail ? "去收信吧" : mode === "signin" ? "登入盯盤室" : "加入盯盤室"}
           </h1>
@@ -162,7 +163,9 @@ function AuthPage() {
               <form onSubmit={handleEmail} className="space-y-4">
                 {mode === "signup" && (
                   <label className="block">
-                    <span className="font-mono text-[11px] tracking-wider text-ink/50">顯示名稱（選填）</span>
+                    <span className="font-mono text-[11px] tracking-wider text-ink/50">
+                      顯示名稱（選填）
+                    </span>
                     <input
                       type="text"
                       value={displayName}
