@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,20 +66,35 @@ function ChromeDot({ size = "size-5" }: { size?: string }) {
 }
 
 function Index() {
+  const { user } = useSession();
+  const navigate = useNavigate();
   const [destination, setDestination] = useState("NRT");
   const [targetPrice, setTargetPrice] = useState("5000");
-  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.includes("@")) {
-      toast.error("請輸入有效的 Email 地址");
-      return;
-    }
     const price = parseInt(targetPrice.replace(/,/g, ""), 10);
     if (!price || price <= 0) {
       toast.error("請輸入有效的目標價");
+      return;
+    }
+    if (!user) {
+      toast.info("先登入，才能幫你盯這條航線");
+      navigate({ to: "/auth" });
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.from("flight_alerts").insert({
+      user_id: user.id,
+      destination,
+      target_price: price,
+      notify_email: user.email ?? "",
+    });
+    setSaving(false);
+    if (error) {
+      toast.error("儲存失敗，請再試一次");
       return;
     }
     setSubmitted(true);
