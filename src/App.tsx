@@ -9,6 +9,7 @@ import { NotFound } from "@/components/not-found";
 import Index from "@/pages/Index";
 import AuthPage from "@/pages/Auth";
 import AlertsPage from "@/pages/Alerts";
+import PrivacyPage from "@/pages/Privacy";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/sign-in" element={<AuthPage />} />
             <Route path="/sign-up" element={<AuthPage />} />
             <Route
