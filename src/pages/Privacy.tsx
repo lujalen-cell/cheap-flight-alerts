@@ -97,7 +97,7 @@ export default function PrivacyPage() {
             <p className="mt-2">
               若你對本隱私權政策或你的個人資料有任何問題，歡迎透過以下 Email 與我們聯絡：
               <br />
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary underline underline-offset-2">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-gold underline underline-offset-2">
                 {CONTACT_EMAIL}
               </a>
             </p>

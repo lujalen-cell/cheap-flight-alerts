@@ -5,9 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * DEALFLIGHT — Boardroom chrome design system
- * Retro departure-board energy: warm paper, ink navy, chrome gradients,
- * brand orange, gold accents, teal for "good" deltas.
+ * DEALFLIGHT — Lemon-pop design system
+ * Cartoon-lemon energy: warm cream paper, near-black ink outlines,
+ * glossy lemon-yellow gradients, bold yellow brand, amber gold accents,
+ * teal for "good" deltas.
  */
 
 @theme inline {
@@ -56,59 +57,59 @@
 
 :root {
   --radius: 0.625rem;
-  /* warm paper as app background */
-  --background: #f3ede1;
-  --foreground: #171a21;
-  --card: #fbf8f1;
-  --card-foreground: #171a21;
-  --popover: #fbf8f1;
-  --popover-foreground: #171a21;
-  --primary: #e8542f;
-  --primary-foreground: #fbf8f1;
-  --secondary: #ece3d2;
-  --secondary-foreground: #171a21;
-  --muted: #ece3d2;
+  /* warm cream as app background, like the lemon illustration's paper */
+  --background: #f6efdc;
+  --foreground: #1c1710;
+  --card: #fffbf0;
+  --card-foreground: #1c1710;
+  --popover: #fffbf0;
+  --popover-foreground: #1c1710;
+  --primary: #f4c418;
+  --primary-foreground: #1c1710;
+  --secondary: #f1e6c8;
+  --secondary-foreground: #1c1710;
+  --muted: #f1e6c8;
   --muted-foreground: #6b6353;
-  --accent: #ece3d2;
-  --accent-foreground: #171a21;
+  --accent: #f1e6c8;
+  --accent-foreground: #1c1710;
   --destructive: #c23b22;
-  --destructive-foreground: #fbf8f1;
-  --border: #171a211f;
-  --input: #171a2126;
-  --ring: #e8542f;
+  --destructive-foreground: #fffbf0;
+  --border: #1c17101f;
+  --input: #1c171026;
+  --ring: #f4c418;
   /* DEALFLIGHT tokens */
-  --ink: #171a21;
-  --ink-soft: #2b2f3a;
-  --paper: #f3ede1;
-  --paper-2: #ece3d2;
-  --cream: #fbf8f1;
-  --brand: #e8542f;
-  --brand-2: #f07a3c;
-  --gold: #e7a53b;
+  --ink: #1c1710;
+  --ink-soft: #2e2717;
+  --paper: #f6efdc;
+  --paper-2: #f1e6c8;
+  --cream: #fffbf0;
+  --brand: #f4c418;
+  --brand-2: #ffd93d;
+  --gold: #b8690a;
   --teal: #2f6b63;
-  --line: #171a211f;
+  --line: #1c17101f;
 }
 
 .dark {
-  --background: #171a21;
-  --foreground: #fbf8f1;
-  --card: #2b2f3a;
-  --card-foreground: #fbf8f1;
-  --popover: #2b2f3a;
-  --popover-foreground: #fbf8f1;
-  --primary: #e8542f;
-  --primary-foreground: #fbf8f1;
-  --secondary: #2b2f3a;
-  --secondary-foreground: #fbf8f1;
-  --muted: #2b2f3a;
-  --muted-foreground: #b6a98c;
-  --accent: #2b2f3a;
-  --accent-foreground: #fbf8f1;
+  --background: #1c1710;
+  --foreground: #fffbf0;
+  --card: #2e2717;
+  --card-foreground: #fffbf0;
+  --popover: #2e2717;
+  --popover-foreground: #fffbf0;
+  --primary: #f4c418;
+  --primary-foreground: #1c1710;
+  --secondary: #2e2717;
+  --secondary-foreground: #fffbf0;
+  --muted: #2e2717;
+  --muted-foreground: #cbb98c;
+  --accent: #2e2717;
+  --accent-foreground: #fffbf0;
   --destructive: #e8542f;
-  --destructive-foreground: #fbf8f1;
+  --destructive-foreground: #fffbf0;
   --border: #ffffff1a;
   --input: #ffffff26;
-  --ring: #e7a53b;
+  --ring: #f4c418;
 }
 
 @layer base {
@@ -123,26 +124,26 @@
   }
 }
 
-/* Chrome metal gradient — used for the logo dot and hero headline text */
+/* Glossy lemon gradient — used for the logo dot and hero headline text */
 .chrome {
   background: linear-gradient(
     180deg,
-    #fbf8f1 0%,
-    #e3d6c0 46%,
-    #b6a688 50%,
-    #f8f2e6 56%,
-    #dccfb6 100%
+    #fff3b0 0%,
+    #ffd93d 46%,
+    #f4c418 50%,
+    #fff3b0 56%,
+    #e0a812 100%
   );
 }
 
 .chrome-text {
   background-image: linear-gradient(
     180deg,
-    #fbf8f1 0%,
-    #e3d6c0 46%,
-    #b6a688 50%,
-    #f8f2e6 56%,
-    #dccfb6 100%
+    #fff3b0 0%,
+    #ffd93d 46%,
+    #f4c418 50%,
+    #fff3b0 56%,
+    #e0a812 100%
   );
   -webkit-background-clip: text;
   background-clip: text;

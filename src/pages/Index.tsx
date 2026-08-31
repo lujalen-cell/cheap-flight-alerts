@@ -179,14 +179,14 @@ export default function Index() {
           {user ? (
             <Link
               to="/alerts"
-              className="font-mono text-xs tracking-wider bg-brand text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors"
+              className="font-mono text-xs tracking-wider bg-brand text-ink px-4 py-2 rounded-full ring-1 ring-black/10 hover:bg-brand-2 transition-colors"
             >
               我的提醒
             </Link>
           ) : (
             <Link
               to="/auth"
-              className="font-mono text-xs tracking-wider bg-brand text-cream px-4 py-2 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors"
+              className="font-mono text-xs tracking-wider bg-brand text-ink px-4 py-2 rounded-full ring-1 ring-black/10 hover:bg-brand-2 transition-colors"
             >
               登入 / 註冊
             </Link>
@@ -218,7 +218,7 @@ export default function Index() {
                 <div key={d.route} className="p-4">
                   <div className="font-mono text-xs text-ink/60">{d.route}</div>
                   <div className="mt-1 flex items-end gap-2">
-                    <span className="font-display text-3xl text-brand">{d.price}</span>
+                    <span className="font-display text-3xl text-gold">{d.price}</span>
                   </div>
                   <div className="font-mono text-[11px] text-ink/50 line-through">{d.was}</div>
                 </div>
@@ -233,7 +233,7 @@ export default function Index() {
         <div className="mx-auto max-w-6xl px-5 py-16">
           <div className="rv grid lg:grid-cols-[1fr_1.15fr] gap-10 items-center">
             <div>
-              <div className="font-mono text-xs tracking-[0.25em] text-brand">(a) 設定目標價</div>
+              <div className="font-mono text-xs tracking-[0.25em] text-gold">(a) 設定目標價</div>
               <h2 className="font-display text-4xl mt-3 leading-tight text-balance">
                 價格一跳水，手機先響。
               </h2>
@@ -319,7 +319,7 @@ export default function Index() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="mt-5 w-full bg-brand text-cream font-semibold py-3 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors disabled:opacity-50 cursor-pointer"
+                  className="mt-5 w-full bg-brand text-ink font-semibold py-3 rounded-full ring-1 ring-black/10 hover:bg-brand-2 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {user ? "監控這條航線" : "登入後開始監控"}
                 </button>
@@ -337,7 +337,7 @@ export default function Index() {
         <div className="mx-auto max-w-6xl px-5 py-16">
           <div className="flex items-end justify-between mb-6">
             <div>
-              <div className="font-mono text-xs tracking-[0.25em] text-brand">(b) 現行行情</div>
+              <div className="font-mono text-xs tracking-[0.25em] text-gold">(b) 現行行情</div>
               <h2 className="font-display text-4xl mt-2">現在就降的便宜票</h2>
             </div>
             <span className="font-mono text-xs text-ink/50">6 條航線 · 更新於 14:32</span>
@@ -353,7 +353,7 @@ export default function Index() {
                 <div className="flex items-center justify-between">
                   <span
                     className={`font-mono text-xs px-2 py-0.5 rounded-full ${
-                      d.tagStyle === "brand" ? "bg-brand text-cream" : "bg-gold text-ink"
+                      d.tagStyle === "brand" ? "bg-brand text-ink" : "bg-gold text-ink"
                     }`}
                   >
                     {d.tag}
@@ -365,7 +365,7 @@ export default function Index() {
                 </div>
                 <div className="mt-1 font-mono text-xs text-ink/50">{d.meta}</div>
                 <div className="mt-4 flex items-end gap-3">
-                  <span className="font-display text-4xl text-brand">{d.price}</span>
+                  <span className="font-display text-4xl text-gold">{d.price}</span>
                   <span className="font-mono text-xs text-ink/40 line-through mb-1">{d.was}</span>
                   <span className="font-mono text-[11px] text-teal mb-1">{d.off}</span>
                 </div>

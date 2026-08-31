@@ -201,7 +201,7 @@ export default function AuthPage() {
                 <button
                   type="submit"
                   disabled={busy}
-                  className="w-full bg-brand text-cream font-semibold py-3 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors disabled:opacity-50 cursor-pointer"
+                  className="w-full bg-brand text-ink font-semibold py-3 rounded-full ring-1 ring-black/10 hover:bg-brand-2 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {mode === "signin" ? "登入" : "建立帳號"}
                 </button>
@@ -212,7 +212,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-                  className="ml-1 text-brand underline underline-offset-4 hover:text-brand-2 cursor-pointer"
+                  className="ml-1 text-gold underline underline-offset-4 hover:text-ink cursor-pointer"
                 >
                   {mode === "signin" ? "免費註冊" : "直接登入"}
                 </button>

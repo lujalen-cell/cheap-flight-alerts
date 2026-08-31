@@ -134,7 +134,7 @@ export default function AlertsPage() {
       </header>
 
       <main className="mx-auto max-w-6xl px-5 py-12">
-        <div className="font-mono text-xs tracking-[0.25em] text-brand">MY WATCHLIST</div>
+        <div className="font-mono text-xs tracking-[0.25em] text-gold">MY WATCHLIST</div>
         <h1 className="font-display text-4xl mt-2">我的盯盤清單</h1>
         <p className="mt-2 text-ink/60 text-sm">
           價格跌破目標價時，通知信會寄到 <span className="font-mono">{user.email}</span>
@@ -181,7 +181,7 @@ export default function AlertsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="mt-5 w-full bg-brand text-cream font-semibold py-3 rounded-full ring-1 ring-white/15 hover:bg-brand-2 transition-colors disabled:opacity-50 cursor-pointer"
+              className="mt-5 w-full bg-brand text-ink font-semibold py-3 rounded-full ring-1 ring-black/10 hover:bg-brand-2 transition-colors disabled:opacity-50 cursor-pointer"
             >
               開始監控
             </button>
@@ -233,7 +233,7 @@ export default function AlertsPage() {
                       <button
                         type="button"
                         onClick={() => removeAlert(a.id)}
-                        className="font-mono text-[11px] px-3 py-1.5 rounded-full ring-1 ring-black/10 text-ink/50 hover:text-brand hover:ring-brand/40 cursor-pointer"
+                        className="font-mono text-[11px] px-3 py-1.5 rounded-full ring-1 ring-black/10 text-ink/50 hover:text-destructive hover:ring-destructive/40 cursor-pointer"
                       >
                         刪除
                       </button>
