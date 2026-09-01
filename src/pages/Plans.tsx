@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,17 +13,50 @@ const PLANS = [
     plan_name: "tokyo" as const,
     route: "TPE-TYO",
     label: "台北 ✈ 東京",
-    hint: "目前最低約 NT$9,325",
     defaultTarget: "9000",
   },
   {
     plan_name: "seoul" as const,
     route: "TPE-SEL",
     label: "台北 ✈ 首爾",
-    hint: "目前最低約 NT$5,989",
     defaultTarget: "5800",
   },
 ];
+
+// Travelpayouts 回傳的是 IATA 航空公司代碼，這裡對照常見的幾家轉成中文名稱，
+// 沒對照到的代碼就直接顯示代碼本身，不會讓畫面空白。
+const AIRLINE_NAMES: Record<string, string> = {
+  CI: "中華航空",
+  BR: "長榮航空",
+  JX: "星宇航空",
+  IT: "台灣虎航",
+  MM: "樂桃航空",
+  NH: "全日空",
+  JL: "日本航空",
+  GK: "捷星日本",
+  TR: "酷航",
+  VJ: "越捷航空",
+  KE: "大韓航空",
+  OZ: "韓亞航空",
+  "7C": "濟州航空",
+  TW: "德威航空",
+  LJ: "真航空",
+  ZE: "易斯達航空",
+  BX: "釜山航空",
+  RS: "永宗航空",
+};
+
+function airlineName(code?: string | null) {
+  if (!code) return null;
+  return AIRLINE_NAMES[code] ?? code;
+}
+
+type CheapestFare = {
+  available: boolean;
+  price?: number;
+  currency?: string;
+  airline?: string;
+};
 
 type SubscriptionRow = {
   email: string;
@@ -61,6 +94,19 @@ export default function PlansPage() {
   });
 
   const subscribedByPlan = new Map((subscriptions ?? []).map((s) => [s.plan_name, s]));
+
+  const cheapestQueries = useQueries({
+    queries: PLANS.map((plan) => ({
+      queryKey: ["m1_cheapest", plan.route],
+      queryFn: async () => {
+        const res = await fetch(`${API_BASE}/cheapest?route=${plan.route}`);
+        if (!res.ok) throw new Error("failed to load cheapest fare");
+        return (await res.json()) as CheapestFare;
+      },
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    })),
+  });
 
   async function handleSubscribe(planName: string) {
     const price = parseInt((targets[planName] ?? "").replace(/,/g, ""), 10);
@@ -135,8 +181,10 @@ export default function PlansPage() {
           </div>
         ) : (
           <div className="mt-10 grid sm:grid-cols-2 gap-6">
-            {PLANS.map((plan) => {
+            {PLANS.map((plan, idx) => {
               const subscribed = subscribedByPlan.get(plan.plan_name);
+              const cheapestResult = cheapestQueries[idx];
+              const cheapest = cheapestResult?.data;
               return (
                 <div
                   key={plan.plan_name}
@@ -145,7 +193,6 @@ export default function PlansPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h2 className="font-display text-2xl">{plan.label}</h2>
-                      <p className="mt-1 font-mono text-[11px] text-ink/50">{plan.hint}</p>
                     </div>
                     {subscribed && (
                       <span className="shrink-0 font-mono text-[11px] px-3 py-1 rounded-full bg-teal/10 text-teal ring-1 ring-teal/30">
@@ -160,7 +207,29 @@ export default function PlansPage() {
                     </p>
                   )}
 
-                  <label className="block mt-4">
+                  <div className="mt-4 rounded-xl bg-paper-2 px-3.5 py-3">
+                    <span className="font-mono text-[11px] tracking-wider text-ink/50">
+                      即時最低價
+                    </span>
+                    {cheapestResult?.isLoading ? (
+                      <p className="mt-0.5 font-mono text-xs text-ink/40">查詢中…</p>
+                    ) : cheapestResult?.isError || !cheapest?.available ? (
+                      <p className="mt-0.5 font-mono text-xs text-ink/40">暫時查不到即時報價</p>
+                    ) : (
+                      <p className="mt-0.5 flex items-baseline gap-2">
+                        <span className="font-mono text-lg font-semibold text-ink">
+                          NT${Number(cheapest.price).toLocaleString()}
+                        </span>
+                        {airlineName(cheapest.airline) && (
+                          <span className="font-mono text-[11px] text-ink/50">
+                            {airlineName(cheapest.airline)}
+                          </span>
+                        )}
+                      </p>
+                    )}
+                  </div>
+
+                  <label className="block mt-3">
                     <span className="font-mono text-[11px] tracking-wider text-ink/50">
                       目標價 (NT$)
                     </span>
