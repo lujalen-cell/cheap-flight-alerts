@@ -119,6 +119,12 @@ export default function AlertsPage() {
             <span className="font-display text-lg tracking-wide">DEALFLIGHT</span>
           </Link>
           <div className="flex items-center gap-4">
+            <Link
+              to="/plans"
+              className="font-mono text-xs tracking-wider text-cream/70 hover:text-cream"
+            >
+              訂閱方案
+            </Link>
             <span className="hidden sm:block font-mono text-[11px] text-cream/50">
               {user.email}
             </span>

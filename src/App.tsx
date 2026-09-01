@@ -9,6 +9,7 @@ import { NotFound } from "@/components/not-found";
 import Index from "@/pages/Index";
 import AuthPage from "@/pages/Auth";
 import AlertsPage from "@/pages/Alerts";
+import PlansPage from "@/pages/Plans";
 import PrivacyPage from "@/pages/Privacy";
 
 const queryClient = new QueryClient();
@@ -59,6 +60,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <AlertsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/plans"
+              element={
+                <ProtectedRoute>
+                  <PlansPage />
                 </ProtectedRoute>
               }
             />
