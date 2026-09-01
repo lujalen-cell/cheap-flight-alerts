@@ -58,6 +58,21 @@ type CheapestFare = {
   airline?: string;
 };
 
+const HOW_IT_WORKS = [
+  {
+    title: "每 30 分鐘即時查價",
+    desc: "不用自己開好幾個網站比價，系統自動幫你盯著。",
+  },
+  {
+    title: "達標才通知，不洗版信箱",
+    desc: "同一條航線 24 小時內只提醒一次，除非又大降價。",
+  },
+  {
+    title: "到價立刻寄信",
+    desc: "搶在別人訂位前，你先知道。",
+  },
+];
+
 type SubscriptionRow = {
   email: string;
   route: string;
@@ -174,6 +189,15 @@ export default function PlansPage() {
           選一條線、設定目標價，系統每 30 分鐘幫你比價，到價立刻寄信到{" "}
           <span className="font-mono">{user.email}</span>
         </p>
+
+        <div className="mt-6 grid sm:grid-cols-3 gap-3">
+          {HOW_IT_WORKS.map((item) => (
+            <div key={item.title} className="rounded-2xl bg-cream ring-1 ring-black/5 p-4">
+              <p className="font-display text-base">{item.title}</p>
+              <p className="mt-1 text-xs text-ink/60">{item.desc}</p>
+            </div>
+          ))}
+        </div>
 
         {isLoading ? (
           <div className="mt-10 rounded-3xl bg-cream ring-1 ring-black/5 p-10 text-center font-mono text-xs text-ink/40">
